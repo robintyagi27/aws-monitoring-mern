@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Scrape web server node_exporter
+  - job_name: "web-server"
+    static_configs:
+      - targets: ["10.0.1.135:9100"]
+
+  # Scrape DB server node_exporter
+  - job_name: "db-server"
+    static_configs:
+      - targets: ["10.0.2.77:9100"]
+
+rule_files:
+  - "rules/node_alerts.yml"
+  - "rules/mogodb_alerts.yml"
+
