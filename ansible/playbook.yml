@@ -1,0 +1,29 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Create required directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /usr/local/bin
+        - /etc/node_exporter
+        - /etc/mongodb_exporter
+
+- hosts: web
+  become: yes
+  tasks:
+    - name: Install Node Exporter on Web
+      include_tasks: tasks/node_exporter.yml
+
+- hosts: db
+  become: yes
+  tasks:
+    - name: Copy MongoDB Exporter package
+      copy:
+        src: files/mongodb_exporter.tar.gz
+        dest: /tmp/mongodb_exporter.tar.gz
+
+    - name: Install MongoDB Exporter on DB
+      include_tasks: tasks/mongodb_exporter.yml

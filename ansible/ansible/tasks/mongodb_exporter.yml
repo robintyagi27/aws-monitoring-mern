@@ -1,0 +1,27 @@
+---
+- name: Extract MongoDB Exporter
+  unarchive:
+    src: /tmp/mongodb_exporter.tar.gz
+    dest: /usr/local/bin/
+    remote_src: yes
+
+- name: Create MongoDB exporter service
+  copy:
+    dest: /etc/systemd/system/mongodb_exporter.service
+    content: |
+      [Unit]
+      Description=MongoDB Exporter
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/local/bin/mongodb_exporter --mongodb.uri=mongodb://10.0.2.77:27017
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable & Start MongoDB Exporter
+  systemd:
+    name: mongodb_exporter
+    enabled: yes
+    state: restarted
